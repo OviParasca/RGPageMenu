@@ -8,45 +8,45 @@
 
 import UIKit
 
-public class RGPageMenuOptions {
+open class RGPageMenuOptions {
     
-    public var backgroundColor = UIColor.blackColor()
-    public var selectedColor = UIColor.blackColor()
-    public var textColor = UIColor.darkGrayColor()
-    public var selectedTextColor = UIColor.whiteColor()
-    public var font = UIFont.systemFontOfSize(16)
+    open var backgroundColor = UIColor.black
+    open var selectedColor = UIColor.black
+    open var textColor = UIColor.darkGray
+    open var selectedTextColor = UIColor.white
+    open var font = UIFont.systemFont(ofSize: 16)
     
-    public var menuHeight: CGFloat = 45.0
-    public var menuItemMargin: CGFloat = 10.0
-    public var menuBounces = true
-    public var menuPosition: MenuPosition = .Top
-    public var menuAlign: MenuAlign = .Center
-    public var menuStyle: MenuStyle = .Underline(height: 3,
-                                                 color: UIColor.whiteColor(),
-                                                 horizontalPadding: 0,
-                                                 verticalPadding: 0)
+    open var menuHeight: CGFloat = 45.0
+    open var menuItemMargin: CGFloat = 10.0
+    open var menuBounces = true
+    open var menuPosition: MenuPosition = .top
+    open var menuAlign: MenuAlign = .center
+    open var menuStyle: MenuStyle = .underline(height: 3,
+                                               color: UIColor.white,
+                                               horizontalPadding: 0,
+                                               verticalPadding: 0)
     
-    public var defaultPage = 0
-    public var animationDuration: NSTimeInterval = 0.3
+    open var defaultPage = 0
+    open var animationDuration: TimeInterval = 0.3
     var menuItemCount: Int = 0
     
     
     public enum MenuPosition {
-        case Top
-        case Bottom
+        case top
+        case bottom
     }
     
     public enum MenuStyle {
-        case None
-        case Underline(height: CGFloat, color: UIColor, horizontalPadding: CGFloat, verticalPadding: CGFloat)
+        case none
+        case underline(height: CGFloat, color: UIColor, horizontalPadding: CGFloat, verticalPadding: CGFloat)
     }
     
     // menu 개수가 frame width보다 작을 때 align 기준
     public enum MenuAlign {
-        case Left
-        case Center
-        case Right
-        case Fit
+        case left
+        case center
+        case right
+        case fit
     }
     
     public init() {}

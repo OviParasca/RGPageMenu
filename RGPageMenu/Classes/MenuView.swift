@@ -11,32 +11,32 @@ import UIKit
 class MenuView: UIScrollView {
     
     var menuItemViews = [MenuItemView]()
-    private var options: RGPageMenuOptions!
+    fileprivate var options: RGPageMenuOptions!
     
     var currentPage: Int = 0
     
-    private let contentView: UIView = {
+    fileprivate let contentView: UIView = {
         let view = UIView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
     
-    lazy private var underlineView: UIView = {
+    lazy fileprivate var underlineView: UIView = {
         let view = UIView(frame: .zero)
-        view.userInteractionEnabled = false
+        view.isUserInteractionEnabled = false
         return view
     }()
     
-    private var contentOffsetX: CGFloat {
-//        return menuItemViews[currentPage].frame.midX - UIApplication.sharedApplication().keyWindow!.bounds.width / 2 // center of screen width
+    fileprivate var contentOffsetX: CGFloat {
+        //        return menuItemViews[currentPage].frame.midX - UIApplication.sharedApplication().keyWindow!.bounds.width / 2 // center of screen width
         
         let offset = (contentSize.width - frame.width)
         if offset < 0 {
             switch options.menuAlign {
-            case .Left: return 0
-            case .Center: return offset / 2
-            case .Right: return offset
-            case .Fit: return 0
+            case .left: return 0
+            case .center: return offset / 2
+            case .right: return offset
+            case .fit: return 0
             }
         }
         
@@ -66,35 +66,35 @@ class MenuView: UIScrollView {
     
     // MARK: - Layout
     
-    private func setupScrollView() {
+    fileprivate func setupScrollView() {
         backgroundColor = options.backgroundColor
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false
         bounces = options.menuBounces
-        scrollEnabled = true
+        isScrollEnabled = true
         scrollsToTop = false
         translatesAutoresizingMaskIntoConstraints = false
     }
     
-    private func setupContentView() {
+    fileprivate func setupContentView() {
         addSubview(contentView)
     }
     
-    private func layoutContentView() {
+    fileprivate func layoutContentView() {
         let viewsDictionary = ["contentView": contentView, "scrollView": self]
-        let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[contentView]|",
-                                                                                   options: [],
-                                                                                   metrics: nil,
-                                                                                   views: viewsDictionary)
-        let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[contentView(==scrollView)]|",
-                                                                                 options: [],
-                                                                                 metrics: nil,
-                                                                                 views: viewsDictionary)
+        let horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[contentView]|",
+                                                                   options: [],
+                                                                   metrics: nil,
+                                                                   views: viewsDictionary)
+        let verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[contentView(==scrollView)]|",
+                                                                 options: [],
+                                                                 metrics: nil,
+                                                                 views: viewsDictionary)
         
-        NSLayoutConstraint.activateConstraints(horizontalConstraints + verticalConstraints)
+        NSLayoutConstraint.activate(horizontalConstraints + verticalConstraints)
     }
     
-    private func setupMenuItems(titles: [String]) {
+    fileprivate func setupMenuItems(_ titles: [String]) {
         titles.forEach {
             let menuItemView = MenuItemView(title: $0, options: options)
             contentView.addSubview(menuItemView)
@@ -103,10 +103,10 @@ class MenuView: UIScrollView {
         }
     }
     
-    private func layoutMenuItemView() {
-        NSLayoutConstraint.deactivateConstraints(contentView.constraints)
+    fileprivate func layoutMenuItemView() {
+        NSLayoutConstraint.deactivate(contentView.constraints)
         
-        for (index, menuItemView) in menuItemViews.enumerate() {
+        for (index, menuItemView) in menuItemViews.enumerated() {
             let visualFormat: String
             var viewsDictionary = ["menuItemView": menuItemView]
             if index == 0 { // first menu
@@ -119,16 +119,16 @@ class MenuView: UIScrollView {
                     visualFormat = "H:[previousMenuItemView][menuItemView]"
                 }
             }
-            let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat(visualFormat,
-                                                                                       options: [],
-                                                                                       metrics: nil,
-                                                                                       views: viewsDictionary)
-            let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[menuItemView]|",
-                                                                                     options: [],
-                                                                                     metrics: nil,
-                                                                                     views: viewsDictionary)
+            let horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: visualFormat,
+                                                                       options: [],
+                                                                       metrics: nil,
+                                                                       views: viewsDictionary)
+            let verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[menuItemView]|",
+                                                                     options: [],
+                                                                     metrics: nil,
+                                                                     views: viewsDictionary)
             
-            NSLayoutConstraint.activateConstraints(horizontalConstraints + verticalConstraints)
+            NSLayoutConstraint.activate(horizontalConstraints + verticalConstraints)
         }
         
         
@@ -137,23 +137,23 @@ class MenuView: UIScrollView {
         layoutIfNeeded()
     }
     
-//    private func relayoutMenuItemView() {
-//        layoutMenuItemView()
-//    }
+    //    private func relayoutMenuItemView() {
+    //        layoutMenuItemView()
+    //    }
     
-    private func setupUnderlineViewIfNeeded() {
-        guard case let .Underline(height, color, horizontalPadding, verticalPadding) = options.menuStyle else {
+    fileprivate func setupUnderlineViewIfNeeded() {
+        guard case let .underline(height, color, horizontalPadding, verticalPadding) = options.menuStyle else {
             return
         }
         
         let width = menuItemViews[currentPage].bounds.width - horizontalPadding * 2
-        underlineView.frame = CGRectMake(horizontalPadding, options.menuHeight - (height + verticalPadding), width, height)
+        underlineView.frame = CGRect(x: horizontalPadding, y: options.menuHeight - (height + verticalPadding), width: width, height: height)
         underlineView.backgroundColor = color
         contentView.addSubview(underlineView)
     }
     
-    private func animateUnderlineViewIfNeeded() {
-        guard case let .Underline(_, _, horizontalPadding, _) = options.menuStyle else {
+    fileprivate func animateUnderlineViewIfNeeded() {
+        guard case let .underline(_, _, horizontalPadding, _) = options.menuStyle else {
             return
         }
         
@@ -161,9 +161,9 @@ class MenuView: UIScrollView {
         underlineView.frame.origin.x = targetFrame.minX + horizontalPadding
         underlineView.frame.size.width = targetFrame.width - horizontalPadding * 2
     }
-
-    private func selectMenuItem() {
-        for (index, menuItemView) in menuItemViews.enumerate() {
+    
+    fileprivate func selectMenuItem() {
+        for (index, menuItemView) in menuItemViews.enumerated() {
             menuItemView.selected = (index == currentPage)
         }
         
@@ -171,21 +171,22 @@ class MenuView: UIScrollView {
         layoutIfNeeded()
     }
     
-    private func positionMenuItemViews() {
+    fileprivate func positionMenuItemViews() {
         contentOffset.x = contentOffsetX
         animateUnderlineViewIfNeeded()
     }
     
     // MARK: -
     
-    func moveToMenu(page: Int, animated: Bool) {
+    func moveToMenu(_ page: Int, animated: Bool) {
         let duration = animated ? options.animationDuration : 0
         currentPage = page
-
-        UIView.animateWithDuration(duration, animations: { [unowned self] () -> Void in
+        
+        UIView.animate(withDuration: duration, delay: 0.0, options: [], animations: {
+        }, completion: { (finished: Bool) in
             self.selectMenuItem()
             self.positionMenuItemViews()
-            })
-        
+        })
     }
 }
+

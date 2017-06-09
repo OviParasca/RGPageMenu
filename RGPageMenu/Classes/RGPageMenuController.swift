@@ -10,27 +10,27 @@ import UIKit
 
 @objc
 public protocol RGPageMenuControllerDelegate: class {
-    optional func willMoveToPageMenuController(viewController: UIViewController, nextViewController: UIViewController)
-    optional func didMoveToPageMenuController(viewController: UIViewController)
+    @objc optional func willMoveToPageMenuController(_ viewController: UIViewController, nextViewController: UIViewController)
+    @objc optional func didMoveToPageMenuController(_ viewController: UIViewController)
 }
 
 
-public class RGPageMenuController: UIViewController {
+open class RGPageMenuController: UIViewController {
     
-    weak public var delegate: RGPageMenuControllerDelegate?
-
-    private var menuView: MenuView!
-    private var options: RGPageMenuOptions!
-    private var menuTitles: [String] {
+    weak open var delegate: RGPageMenuControllerDelegate?
+    
+    fileprivate var menuView: MenuView!
+    fileprivate var options: RGPageMenuOptions!
+    fileprivate var menuTitles: [String] {
         return viewControllers.map {
             return $0.title ?? "Menu"
         }
     }
     
-    private var pageViewController: UIPageViewController!
+    fileprivate var pageViewController: UIPageViewController!
     
-    private(set) var currentPage = 0
-    private var viewControllers: [UIViewController]!
+    fileprivate(set) var currentPage = 0
+    fileprivate var viewControllers: [UIViewController]!
     
     
     
@@ -50,7 +50,7 @@ public class RGPageMenuController: UIViewController {
         self.init(viewControllers: viewControllers, options: RGPageMenuOptions())
     }
     
-    override public func viewDidAppear(animated: Bool) {
+    override open func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
         menuView.moveToMenu(currentPage, animated: false)
@@ -59,7 +59,7 @@ public class RGPageMenuController: UIViewController {
     
     // MARK: - Layout
     
-    private func setupMenuView() {
+    fileprivate func setupMenuView() {
         menuView = MenuView(menuTitles: menuTitles, options: options)
         menuView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(menuView)
@@ -67,46 +67,46 @@ public class RGPageMenuController: UIViewController {
         addTapGestureHandlers()
     }
     
-    private func layoutMenuView() {
+    fileprivate func layoutMenuView() {
         // cleanup
-//        NSLayoutConstraint.deactivateConstraints(menuView.constraints)
+        //        NSLayoutConstraint.deactivateConstraints(menuView.constraints)
         
         let viewsDictionary = ["menuView": menuView]
         let metrics = ["height": options.menuHeight]
-        let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[menuView]|",
-                                                                                   options: [],
-                                                                                   metrics: nil,
-                                                                                   views: viewsDictionary)
+        let horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[menuView]|",
+                                                                   options: [],
+                                                                   metrics: nil,
+                                                                   views: viewsDictionary)
         let verticalConstraints: [NSLayoutConstraint]
         switch options.menuPosition {
-        case .Top:
-            verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[menuView(height)]",
-                                                                                 options: [],
-                                                                                 metrics: metrics,
-                                                                                 views: viewsDictionary)
-        case .Bottom:
-            verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[menuView(height)]|",
-                                                                                 options: [],
-                                                                                 metrics: metrics,
-                                                                                 views: viewsDictionary)
+        case .top:
+            verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[menuView(height)]",
+                                                                 options: [],
+                                                                 metrics: metrics,
+                                                                 views: viewsDictionary)
+        case .bottom:
+            verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:[menuView(height)]|",
+                                                                 options: [],
+                                                                 metrics: metrics,
+                                                                 views: viewsDictionary)
         }
         
-        NSLayoutConstraint.activateConstraints(horizontalConstraints + verticalConstraints)
+        NSLayoutConstraint.activate(horizontalConstraints + verticalConstraints)
         
         menuView.setNeedsLayout()
         menuView.layoutIfNeeded()
     }
     
-    private func setupPageView() {
-        pageViewController = UIPageViewController(transitionStyle: .Scroll,
-                                                  navigationOrientation: .Horizontal,
+    fileprivate func setupPageView() {
+        pageViewController = UIPageViewController(transitionStyle: .scroll,
+                                                  navigationOrientation: .horizontal,
                                                   options: nil)
         pageViewController.delegate = self
         pageViewController.dataSource = self
         
         let childViewControllers = [ viewControllers[currentPage] ]
         pageViewController.setViewControllers(childViewControllers,
-                                              direction: .Forward,
+                                              direction: .forward,
                                               animated: false,
                                               completion: nil)
         
@@ -115,49 +115,49 @@ public class RGPageMenuController: UIViewController {
         pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(pageViewController.view)
         
-        pageViewController.didMoveToParentViewController(self)
+        pageViewController.didMove(toParentViewController: self)
     }
     
-    private func layoutPageView() {
+    fileprivate func layoutPageView() {
         let viewsDictionary = ["pageView": pageViewController.view, "menuView": menuView]
-        let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[pageView]|",
-                                                                                   options: [],
-                                                                                   metrics: nil,
-                                                                                   views: viewsDictionary)
+        let horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[pageView]|",
+                                                                   options: [],
+                                                                   metrics: nil,
+                                                                   views: viewsDictionary)
         let verticalConstraints: [NSLayoutConstraint]
         switch options.menuPosition {
-        case .Top:
-            verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:[menuView][pageView]|",
-                                                                                 options: [],
-                                                                                 metrics: nil,
-                                                                                 views: viewsDictionary)
-        case .Bottom:
-            verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[pageView][menuView]",
-                                                                                 options: [],
-                                                                                 metrics: nil,
-                                                                                 views: viewsDictionary)
+        case .top:
+            verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:[menuView][pageView]|",
+                                                                 options: [],
+                                                                 metrics: nil,
+                                                                 views: viewsDictionary)
+        case .bottom:
+            verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[pageView][menuView]",
+                                                                 options: [],
+                                                                 metrics: nil,
+                                                                 views: viewsDictionary)
         }
         
-        NSLayoutConstraint.activateConstraints(horizontalConstraints + verticalConstraints)
+        NSLayoutConstraint.activate(horizontalConstraints + verticalConstraints)
         
         view.setNeedsLayout()
         view.layoutIfNeeded()
     }
     
-    private func validateDefaultPage() {
+    fileprivate func validateDefaultPage() {
         guard options.defaultPage >= 0 && options.defaultPage < options.menuItemCount else {
-            NSException(name: "PageMenuException", reason: "default page is not valid!", userInfo: nil).raise()
+            NSException(name: NSExceptionName(rawValue: "PageMenuException"), reason: "default page is not valid!", userInfo: nil).raise()
             return
         }
     }
     
-    private func indexOfViewController(viewController: UIViewController) -> Int {
-        return viewControllers.indexOf(viewController) ?? NSNotFound
+    fileprivate func indexOfViewController(_ viewController: UIViewController) -> Int {
+        return viewControllers.index(of: viewController) ?? NSNotFound
     }
     
     // MARK: - Gesture handler
     
-    private func addTapGestureHandlers() {
+    fileprivate func addTapGestureHandlers() {
         menuView.menuItemViews.forEach {
             let gestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture))
             gestureRecognizer.numberOfTapsRequired = 1
@@ -165,20 +165,20 @@ public class RGPageMenuController: UIViewController {
         }
     }
     
-    func handleTapGesture(recognizer: UITapGestureRecognizer) {
+    func handleTapGesture(_ recognizer: UITapGestureRecognizer) {
         guard let menuItemView = recognizer.view as? MenuItemView else { return }
-        guard let page = menuView.menuItemViews.indexOf(menuItemView) where page != menuView.currentPage else { return }
-
+        guard let page = menuView.menuItemViews.index(of: menuItemView), page != menuView.currentPage else { return }
+        
         moveToPage(page)
     }
     
     
     // MARK: - public
     
-    public func configure(viewControllers: [UIViewController], options: RGPageMenuOptions) {
+    open func configure(_ viewControllers: [UIViewController], options: RGPageMenuOptions) {
         let menuItemCount = viewControllers.count
         guard menuItemCount > 0 else {
-            NSException(name: "PageMenuException", reason: "child view controller is empty!", userInfo: nil).raise()
+            NSException(name: NSExceptionName(rawValue: "PageMenuException"), reason: "child view controller is empty!", userInfo: nil).raise()
             return
         }
         
@@ -195,10 +195,10 @@ public class RGPageMenuController: UIViewController {
         layoutPageView()
     }
     
-    public func moveToPage(page: Int, animated: Bool = true) {
+    open func moveToPage(_ page: Int, animated: Bool = true) {
         guard page < options.menuItemCount && page != currentPage else { return }
         
-        let direction: UIPageViewControllerNavigationDirection = page < currentPage ? .Reverse : .Forward
+        let direction: UIPageViewControllerNavigationDirection = page < currentPage ? .reverse : .forward
         
         // page 이동
         currentPage = page % viewControllers.count // for infinite loop
@@ -219,7 +219,7 @@ extension RGPageMenuController: UIPageViewControllerDelegate {
     
     // MARK: - UIPageViewControllerDelegate
     
-    public func pageViewController(pageViewController: UIPageViewController, willTransitionToViewControllers pendingViewControllers: [UIViewController]) {
+    public func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
         if let nextViewController = pendingViewControllers.first {
             let index = indexOfViewController(nextViewController)
             guard index != NSNotFound else { return }
@@ -234,7 +234,7 @@ extension RGPageMenuController: UIPageViewControllerDelegate {
         }
     }
     
-    public func pageViewController(pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+    public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
         if !completed {
             if let previousViewController = previousViewControllers.first {
                 let index = indexOfViewController(previousViewController)
@@ -256,7 +256,7 @@ extension RGPageMenuController: UIPageViewControllerDataSource {
     
     // MARK: - UIPageViewControllerDataSource
     
-    public func pageViewController(pageViewController: UIPageViewController, viewControllerBeforeViewController viewController: UIViewController) -> UIViewController? {
+    public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         let index = indexOfViewController(viewController)
         guard index != 0 && index != NSNotFound else {
             return nil
@@ -265,12 +265,12 @@ extension RGPageMenuController: UIPageViewControllerDataSource {
         return viewControllers[index - 1]
     }
     
-    public func pageViewController(pageViewController: UIPageViewController, viewControllerAfterViewController viewController: UIViewController) -> UIViewController? {
+    public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
         let index = indexOfViewController(viewController)
         guard index < viewControllers.count - 1 && index != NSNotFound else {
             return nil
         }
-
+        
         return viewControllers[index + 1]
     }
 }

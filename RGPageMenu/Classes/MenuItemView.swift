@@ -10,24 +10,24 @@ import UIKit
 
 class MenuItemView: UIView {
     
-    private var options: RGPageMenuOptions!
-
+    fileprivate var options: RGPageMenuOptions!
+    
     var titleLabel: UILabel = {
         let label = UILabel(frame: .zero)
-        label.textAlignment = .Center
-        label.userInteractionEnabled = true
+        label.textAlignment = .center
+        label.isUserInteractionEnabled = true
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    private var labelSize: CGSize {
+    fileprivate var labelSize: CGSize {
         guard let text = titleLabel.text else { return .zero }
-        return NSString(string: text).boundingRectWithSize(CGSizeMake(CGFloat.max, CGFloat.max),
-                                                           options: .UsesLineFragmentOrigin,
-                                                           attributes: [NSFontAttributeName: titleLabel.font],
-                                                           context: nil).size
+        return NSString(string: text).boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
+                                                   options: .usesLineFragmentOrigin,
+                                                   attributes: [NSFontAttributeName: titleLabel.font],
+                                                   context: nil).size
     }
-    private var widthConstraint: NSLayoutConstraint!
+    fileprivate var widthConstraint: NSLayoutConstraint!
     
     var selected: Bool = false {
         didSet {
@@ -58,44 +58,44 @@ class MenuItemView: UIView {
     
     // MARK: - Layout
     
-    private func setupLabel(title: String) {
+    fileprivate func setupLabel(_ title: String) {
         titleLabel.text = title
         titleLabel.textColor = options.textColor
         titleLabel.font = options.font
         addSubview(titleLabel)
     }
     
-    private func layoutLabel() {
+    fileprivate func layoutLabel() {
         let viewsDictionary = ["label": titleLabel]
         
-        let horizontalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("H:|[label]|",
-                                                                                   options: [],
-                                                                                   metrics: nil,
-                                                                                   views: viewsDictionary)
-        let verticalConstraints = NSLayoutConstraint.constraintsWithVisualFormat("V:|[label]|",
-                                                                                 options: [],
-                                                                                 metrics: nil,
-                                                                                 views: viewsDictionary)
+        let horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[label]|",
+                                                                   options: [],
+                                                                   metrics: nil,
+                                                                   views: viewsDictionary)
+        let verticalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "V:|[label]|",
+                                                                 options: [],
+                                                                 metrics: nil,
+                                                                 views: viewsDictionary)
         
-        NSLayoutConstraint.activateConstraints(horizontalConstraints + verticalConstraints)
+        NSLayoutConstraint.activate(horizontalConstraints + verticalConstraints)
         
         let labelSize = calcLabelSize()
-        widthConstraint = NSLayoutConstraint(item: titleLabel, attribute: .Width, relatedBy: .Equal, toItem: nil, attribute: .Width, multiplier: 1.0, constant: labelSize.width)
-        widthConstraint.active = true
+        widthConstraint = NSLayoutConstraint(item: titleLabel, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .width, multiplier: 1.0, constant: labelSize.width)
+        widthConstraint.isActive = true
     }
     
-    private func calcLabelSize() -> CGSize {
+    fileprivate func calcLabelSize() -> CGSize {
         
         let height = floor(labelSize.height) // why floor?
         
-        if options.menuAlign == .Fit {
-            let windowSize = UIApplication.sharedApplication().keyWindow!.bounds.size
+        if options.menuAlign == .fit {
+            let windowSize = UIApplication.shared.keyWindow!.bounds.size
             let width = windowSize.width / CGFloat(options.menuItemCount)
-            return CGSizeMake(width, height)
+            return CGSize(width: width, height: height)
         } else {
             let width = ceil(labelSize.width)
             
-            return CGSizeMake(width + options.menuItemMargin * 2, height)
+            return CGSize(width: width + options.menuItemMargin * 2, height: height)
         }
     }
     
