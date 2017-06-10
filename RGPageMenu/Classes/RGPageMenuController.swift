@@ -15,7 +15,7 @@ public protocol RGPageMenuControllerDelegate: class {
 }
 
 
-open class RGPageMenuController: UIViewController {
+open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
     
     weak open var delegate: RGPageMenuControllerDelegate?
     
@@ -116,6 +116,13 @@ open class RGPageMenuController: UIViewController {
         view.addSubview(pageViewController.view)
         
         pageViewController.didMove(toParentViewController: self)
+        
+        // testing
+        for view in self.pageViewController.view.subviews {
+            if let scrollView = view as? UIScrollView {
+                scrollView.delegate = self
+            }
+        }
     }
     
     fileprivate func layoutPageView() {
@@ -186,6 +193,12 @@ open class RGPageMenuController: UIViewController {
         self.options = options
         self.options.menuItemCount = menuItemCount
         
+        var counter = 0
+        for page in self.viewControllers {
+            page.view.tag = counter
+            counter = counter+1
+        }
+        
         validateDefaultPage()
         currentPage = options.defaultPage
         
@@ -219,35 +232,12 @@ extension RGPageMenuController: UIPageViewControllerDelegate {
     
     // MARK: - UIPageViewControllerDelegate
     
-    public func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
-        if let nextViewController = pendingViewControllers.first {
-            let index = indexOfViewController(nextViewController)
-            guard index != NSNotFound else { return }
-            
+    public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        guard completed else { return }
+        
+        if let index = pageViewController.viewControllers!.last?.view.tag {
             currentPage = index
             menuView.moveToMenu(currentPage, animated: true)
-            
-            if let viewController = pageViewController.viewControllers?.first {
-                // delegate가 있으면 notify
-                delegate?.willMoveToPageMenuController?(viewController, nextViewController: nextViewController)
-            }
-        }
-    }
-    
-    public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        if !completed {
-            if let previousViewController = previousViewControllers.first {
-                let index = indexOfViewController(previousViewController)
-                guard index != NSNotFound else { return }
-                
-                currentPage = index
-                menuView.moveToMenu(currentPage, animated: true)
-            }
-        } else {
-            if let nextViewController = pageViewController.viewControllers?.first {
-                // delegate가 있으면 notify
-                delegate?.didMoveToPageMenuController?(nextViewController)
-            }
         }
     }
 }
