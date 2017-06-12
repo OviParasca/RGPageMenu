@@ -228,6 +228,7 @@ open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
     
 }
 
+
 extension RGPageMenuController: UIPageViewControllerDelegate {
     
     // MARK: - UIPageViewControllerDelegate
@@ -238,9 +239,15 @@ extension RGPageMenuController: UIPageViewControllerDelegate {
         if let index = pageViewController.viewControllers!.last?.view.tag {
             currentPage = index
             menuView.moveToMenu(currentPage, animated: true)
+            
+            if let nextViewController = pageViewController.viewControllers!.last {
+                delegate?.didMoveToPageMenuController?(nextViewController)
+            }
         }
     }
+    
 }
+
 
 extension RGPageMenuController: UIPageViewControllerDataSource {
     
