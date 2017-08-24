@@ -117,7 +117,6 @@ open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
         
         pageViewController.didMove(toParentViewController: self)
         
-        // testing
         for view in self.pageViewController.view.subviews {
             if let scrollView = view as? UIScrollView {
                 scrollView.delegate = self
@@ -224,6 +223,9 @@ open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
                                               direction: direction,
                                               animated: animated,
                                               completion: nil)
+        if let nextViewController = pageViewController.viewControllers!.last {
+            delegate?.didMoveToPageMenuController?(nextViewController)
+        }
     }
     
 }
@@ -271,7 +273,4 @@ extension RGPageMenuController: UIPageViewControllerDataSource {
         return viewControllers[index + 1]
     }
 }
-
-
-
 
