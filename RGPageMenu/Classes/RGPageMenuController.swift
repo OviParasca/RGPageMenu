@@ -71,7 +71,7 @@ open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
         // cleanup
         //        NSLayoutConstraint.deactivateConstraints(menuView.constraints)
         
-        let viewsDictionary = ["menuView": menuView]
+        let viewsDictionary : [String : Any] = ["menuView": menuView]
         let metrics = ["height": options.menuHeight]
         let horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[menuView]|",
                                                                    options: [],
@@ -125,7 +125,7 @@ open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
     }
     
     fileprivate func layoutPageView() {
-        let viewsDictionary = ["pageView": pageViewController.view, "menuView": menuView]
+        let viewsDictionary : [String : Any] = ["pageView": pageViewController.view, "menuView": menuView]
         let horizontalConstraints = NSLayoutConstraint.constraints(withVisualFormat: "H:|[pageView]|",
                                                                    options: [],
                                                                    metrics: nil,
@@ -218,7 +218,7 @@ open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
         // menu 이동
         menuView.moveToMenu(currentPage, animated: animated)
         
-        let childViewControllers = [ viewControllers[currentPage] ]
+        let childViewControllers = [viewControllers[currentPage]]
         pageViewController.setViewControllers(childViewControllers,
                                               direction: direction,
                                               animated: animated,
@@ -273,4 +273,7 @@ extension RGPageMenuController: UIPageViewControllerDataSource {
         return viewControllers[index + 1]
     }
 }
+
+
+
 
