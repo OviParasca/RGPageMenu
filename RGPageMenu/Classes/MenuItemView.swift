@@ -24,7 +24,7 @@ class MenuItemView: UIView {
         guard let text = titleLabel.text else { return .zero }
         return NSString(string: text).boundingRect(with: CGSize(width: CGFloat.greatestFiniteMagnitude, height: CGFloat.greatestFiniteMagnitude),
                                                    options: .usesLineFragmentOrigin,
-                                                   attributes: [NSFontAttributeName: titleLabel.font],
+                                                   attributes: [NSAttributedStringKey.font: titleLabel.font],
                                                    context: nil).size
     }
     fileprivate var widthConstraint: NSLayoutConstraint!

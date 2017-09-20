@@ -171,7 +171,7 @@ open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
         }
     }
     
-    func handleTapGesture(_ recognizer: UITapGestureRecognizer) {
+    @objc func handleTapGesture(_ recognizer: UITapGestureRecognizer) {
         guard let menuItemView = recognizer.view as? MenuItemView else { return }
         guard let page = menuView.menuItemViews.index(of: menuItemView), page != menuView.currentPage else { return }
         
