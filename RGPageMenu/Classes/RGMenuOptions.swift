@@ -19,6 +19,7 @@ open class RGPageMenuOptions {
     open var menuHeight: CGFloat = 45.0
     open var menuItemMargin: CGFloat = 10.0
     open var menuBounces = true
+    open var menuScrolls = false
     open var menuPosition: MenuPosition = .top
     open var menuAlign: MenuAlign = .center
     open var menuStyle: MenuStyle = .underline(height: 3,
@@ -51,3 +52,4 @@ open class RGPageMenuOptions {
     
     public init() {}
 }
+

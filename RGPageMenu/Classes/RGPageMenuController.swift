@@ -32,6 +32,13 @@ open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
     fileprivate(set) var currentPage = 0
     fileprivate var viewControllers: [UIViewController]!
     
+    public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        print("here: we're in the \(viewControllers[currentPage])")
+    }
+    
+    public func disableScrolling(isEnabled: Bool) {
+        menuView.isScrollEnabled = isEnabled
+    }
     
     
     // MARK: - Lifecycle
@@ -226,6 +233,10 @@ open class RGPageMenuController: UIViewController, UIScrollViewDelegate {
         if let nextViewController = pageViewController.viewControllers!.last {
             delegate?.didMoveToPageMenuController?(nextViewController)
         }
+    }
+    
+    open func enableScrolling(isEnabled: Bool) {
+        self.menuView.enableScrolling(isEnabled: isEnabled)
     }
     
 }

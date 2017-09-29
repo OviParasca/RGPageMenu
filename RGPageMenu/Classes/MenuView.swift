@@ -71,7 +71,7 @@ class MenuView: UIScrollView {
         showsHorizontalScrollIndicator = false
         showsVerticalScrollIndicator = false
         bounces = options.menuBounces
-        isScrollEnabled = true
+        isScrollEnabled = options.menuScrolls
         scrollsToTop = false
         translatesAutoresizingMaskIntoConstraints = false
     }
@@ -187,6 +187,10 @@ class MenuView: UIScrollView {
             self.selectMenuItem()
             self.positionMenuItemViews()
         })
+    }
+    
+    func enableScrolling(isEnabled: Bool) {
+        isScrollEnabled = isEnabled
     }
 }
 
